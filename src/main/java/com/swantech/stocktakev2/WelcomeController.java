@@ -60,7 +60,8 @@ public class WelcomeController implements Initializable{
        root = new TreeItem<>("Main");
        mainTab.setClosable(false);
        root.setExpanded(true);
-       
+       tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
+       //tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
        ImageView iv = new ImageView(model.folder);
        iv.setId("mainb");
        root.setGraphic(iv);
@@ -259,20 +260,22 @@ public class WelcomeController implements Initializable{
        if(bName.contains(" "))
            bName = bName.replace(" ","_");
                 
-       tab.setContent(new Text(bName));
-       tab.setClosable(true);
+       //tab.setContent(new Text(bName));
+       
+       
        try{
            
            Node n   = (Node) FXMLLoader.load(getClass().getResource("/fxml/"+bName+".fxml"));
-           n.autosize();
+           
            
             tab.setContent(n);
             
             tabPane.getTabs().add(tab);
             onOpen(bName);
+            tab.setClosable(true);
             tab.setOnClosed(e -> onClose(tab));
             tabPane.getSelectionModel().select(tab);
-            
+            System.out.println("  "+tab.isClosable());
        
        }catch(Exception e){
            System.out.println(e.getMessage());
@@ -284,7 +287,12 @@ public class WelcomeController implements Initializable{
    private void onClose(Tab tab){
    
        if(tab.getText().equals("Corrections")){
-          new CorrectionsController().onTabClose();
+          CorrectionsController cc = new CorrectionsController();
+            for(Menu m : cc.menus()){
+                System.out.println(" "+m.toString());
+                menuBar.getMenus().remove(m);
+                
+            }
        }
    
    
